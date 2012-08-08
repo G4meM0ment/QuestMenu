@@ -1,0 +1,6 @@
+name: QuestMenu
+main: G4meM0ment.QuestMenu.QuestMenu
+version: 0.0.1
+author: G4meM0ment
+
+depend: [Vault,Spout,Denizen]

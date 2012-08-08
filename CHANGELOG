@@ -1,0 +1,7 @@
+Version 0.0.1
+	created methods to get/set/add/remove quests from a state
+	created first try of an GUI
+	added keyboard event to open quest menu
+	added first try of button click events
+	added save file for players quests
+	added save file for scripts
