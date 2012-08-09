@@ -22,14 +22,12 @@ import G4meM0ment.QuestMenu.listener.CitizenListener;
 import G4meM0ment.QuestMenu.listener.PListener;
 import G4meM0ment.QuestMenu.listener.SpoutListener;
 import G4meM0ment.QuestMenu.quests.QuestManager;
-import G4meM0ment.QuestMenu.quests.Scripts;
 
 public class QuestMenu extends JavaPlugin {
 	
 	QuestMenu plugin;
 	public GUI gui;
 	public PListener plistener;
-	public Scripts scripts;
 	public SpoutListener spoutlistener;
 	public CitizenListener clistener;
 	public QuestManager qm;
@@ -46,7 +44,7 @@ public class QuestMenu extends JavaPlugin {
 	public void onDisable() {
 		saveConfig();
 		saveCustomConfig();
-		scripts.saveCustomConfig();
+		qm.saveCustomConfig();
 	}
 	
 	public void onEnable() {
@@ -55,7 +53,6 @@ public class QuestMenu extends JavaPlugin {
 		plugin = this;
 		gui = new GUI(this,qm,gm);
 		qm = new QuestManager(this, dataDir);
-		scripts = new Scripts(this, dataDir);
 		gm = new GUIManager(this, qm);
 		
 		playerData = new File(dataDir+"/player_data");
@@ -71,8 +68,8 @@ public class QuestMenu extends JavaPlugin {
 		saveConfig();
 		reloadCustomConfig();
 		saveCustomConfig();
-		scripts.reloadCustomConfig();
-		scripts.saveCustomConfig();
+		qm.reloadCustomConfig();
+		qm.saveCustomConfig();
 		
 		this.getLogger().info("Enabled!");
 	}

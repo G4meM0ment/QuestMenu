@@ -1,11 +1,17 @@
 package G4meM0ment.QuestMenu.quests;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.PrintWriter;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import net.aufdemrand.denizen.Denizen;
 
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -21,6 +27,7 @@ public class QuestManager {
 	private FileConfiguration customConfig = null;
 	private File quests;
 	private String dataDir;
+	private Denizen denizen;
 	
 	public QuestManager(QuestMenu plugin, String dataDir)
 	{
@@ -32,9 +39,15 @@ public class QuestManager {
 	//*** Quest File ***
 	public void reloadCustomConfig() {
 		if (quests == null) {
-		    	quests = new File(plugin.getDataFolder(), "quests");
+		    	quests = new File(plugin.getDataFolder(), "read-only-quests");
 		}
 		customConfig = YamlConfiguration.loadConfiguration(quests);
+		
+		try {
+			ConcatenateQuests();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		 
 		// Look for defaults in the jar
 		InputStream defConfigStream = plugin.getResource("quests");
@@ -67,6 +80,41 @@ public class QuestManager {
 			return false;
 		else
 			return true;
+	}
+	
+	
+	/* got this code from
+	 * denizen
+	 * thanks to aufdemrand
+	 */
+	private void ConcatenateQuests() throws IOException {
+
+		try {
+
+			PrintWriter pw = new PrintWriter(new FileOutputStream(plugin.getDataFolder() + File.separator + "read-only-quests.yml"));
+			File file = new File(plugin.getDataFolder() + File.separator + "scripts");
+			File[] files = file.listFiles();
+			for (int i = 0; i < files.length; i++) {
+
+				String fileName = files[i].getName();
+				if (fileName.substring(fileName.lastIndexOf('.') + 1).equalsIgnoreCase("YML")) {
+
+					plugin.getLogger().log(Level.INFO, "Processing script " + files[i].getPath() + "... ");
+					BufferedReader br = new BufferedReader(new FileReader(files[i].getPath()));
+					String line = br.readLine();
+					while (line != null) {
+						pw.println(line);
+						line = br.readLine();
+					}
+					br.close();
+				}
+			}
+			pw.close();
+			plugin.getLogger().log(Level.INFO, "All quests loaded!");
+
+		} catch (Throwable error) {
+			plugin.getLogger().log(Level.WARNING, "No scripts to load in plugin/QuestMenu/quests");	
+		}
 	}
 	
 	//***Set/Add/Remove Quest-Methods***
@@ -384,19 +432,5 @@ public class QuestManager {
 			return getCustomConfig().getIntegerList("quests.allIDs");
 		return null;
 	}
-
-	public void getAvailableQuests(List<Integer> quests) {
-		for(int id : quests)
-		{
-			getQuest(id);
-		}
-		
-	}
-
-	private void getQuest(int id) {
-		
-		
-	}
-	
 
 }

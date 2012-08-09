@@ -1,27 +1,36 @@
 package G4meM0ment.QuestMenu.quests;
 
-public class Quest {
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
+
+import G4meM0ment.QuestMenu.QuestMenu;
+
+public class Quest{
 	
-	private int id;
+	private String questID;
 	
 	private QuestManager qm;
+	private QuestMenu plugin;
 	
 	
-	public Quest(int id, QuestManager qm) {
-		this.id = id;
-		this.qm = qm;
+	public Quest(String questID) {
+		this.questID = questID;
+		this.plugin = (QuestMenu) Bukkit.getServer().getPluginManager().getPlugin("QuestMenu");
+		this.qm = plugin.qm;
 	}
 	
-	public String getQuestName(int id) {
-		for(int questID : qm.getAllQuestIDs())
-		{
-			if(questID == id)
-			{
-				String questName = qm.getCustomConfig().getString("quests." + id + ".questName");
-				return questName;
-			}
-		}
-		return null;
+	public String getQuestID(Quest quest) {
+		if(quest != null)
+			return questID;
+		else
+			return null;
+	}
+	
+	public String getState(Quest quest, Player player) {
+		if(quest != null)
+			return 	qm.getCustomConfig().getString("players." + player.getName() + "quests." + getQuestID(quest) + ".state");
+		else
+			return "FAILED";
 	}
 
 }
